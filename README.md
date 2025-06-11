@@ -1,21 +1,6 @@
-# Did
+# DID
 
-**TODO: Add description**
+Decentralized Identifiers (DIDs) are a new type of identifier that enable verifiable, self-sovereign digital identities. DIDs are designed to be fully decentralized, allowing individuals and entities to create and manage their own identifiers without relying on a central authority.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `did` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:did, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/did>.
+This will closely follow the [W3C DID specification](https://www.w3.org/TR/did-core/).
 
