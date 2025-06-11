@@ -43,4 +43,15 @@ defmodule DIDURLTest do
                 query: [{"service", "files"}, {"relativeRef", "/resume.pdf"}]
               }}
   end
+
+  test "web URL examples" do
+    assert DID.URL.parse("did:web:w3c-ccg.github.io") ==
+             {:ok, %DID.URL{method: "web", id: "w3c-ccg.github.io", path: ""}}
+
+    assert DID.URL.parse("did:web:w3c-ccg.github.io:user:alice") ==
+             {:ok, %DID.URL{method: "web", id: "w3c-ccg.github.io", path: "user/alice"}}
+
+    assert DID.URL.parse("did:web:example.com%3A3000:user:alice") ==
+             {:ok, %DID.URL{method: "web", id: "example.com:3000", path: "user/alice"}}
+  end
 end

@@ -29,29 +29,35 @@ defmodule DID.URL do
   end
 
   defp parse_did(path, query, fragment) do
-    case String.split(path, ":") do
-      [method, id_path] ->
-        [id | path_part] = String.split(id_path, "/")
+    {method, id, path} =
+      case String.split(path, ":") do
+        ["web", host | rest] ->
+          {"web", String.replace(host, "%3A", ":"), Enum.join(rest, "/")}
 
-        path =
-          case path_part do
-            [] -> nil
-            bits -> Enum.join(bits, "/")
-          end
+        [m, id_path] ->
+          [i | path_part] = String.split(id_path, "/")
 
-        did = %__MODULE__{
-          method: method,
-          id: id,
-          path: path,
-          query: parse_query(query),
-          fragment: fragment
-        }
+          p =
+            case path_part do
+              [] -> nil
+              bits -> Enum.join(bits, "/")
+            end
 
-        {:ok, did}
+          {m, i, p}
 
-      _ ->
-        {:error, "Invalid DID format"}
-    end
+        _ ->
+          {nil, nil, nil}
+      end
+
+    did = %__MODULE__{
+      method: method,
+      id: id,
+      path: path,
+      query: parse_query(query),
+      fragment: fragment
+    }
+
+    {:ok, did}
   end
 
   defp parse_query(nil), do: []
