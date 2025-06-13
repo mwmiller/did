@@ -2,7 +2,7 @@ defmodule DID.URL do
   @moduledoc """
   Decentralized Identifier (DID) module.
   """
-  defstruct method: nil, id: nil, path: nil, query: [], fragment: nil
+  defstruct method: nil, id: nil, path: nil, query: [], fragment: nil, string: ""
 
   @doc """
   Parses a DID URL and returns a DID.URL struct.
@@ -10,10 +10,10 @@ defmodule DID.URL do
   ## Examples
 
       iex> DID.URL.parse("did:example:123456789abcdefghi#fragment")
-      {:ok, %DID.URL{method: "example", id: "123456789abcdefghi", path: nil, query: [], fragment: "fragment"}}
+      {:ok, %DID.URL{method: "example", id: "123456789abcdefghi", path: nil, query: [], fragment: "fragment", string: "did:example:123456789abcdefghi#fragment"}}
 
       iex> DID.URL.parse("did:example:123456789abcdefghi?query=param#fragment")
-      {:ok, %DID.URL{method: "example", id: "123456789abcdefghi", path: nil, query: [{"query", "param"}], fragment: "fragment"}}
+      {:ok, %DID.URL{method: "example", id: "123456789abcdefghi", path: nil, query: [{"query", "param"}], fragment: "fragment", string: "did:example:123456789abcdefghi?query=param#fragment"}}
 
       iex> DID.URL.parse("http://example.com")
       {:error, "Invalid DID URI"}
@@ -21,14 +21,14 @@ defmodule DID.URL do
   def parse(url) do
     case URI.parse(url) do
       %URI{scheme: "did", path: urlpath, query: urlquery, fragment: urlfragment} ->
-        parse_did(urlpath, urlquery, urlfragment)
+        parse_did(url, urlpath, urlquery, urlfragment)
 
       _ ->
         {:error, "Invalid DID URI"}
     end
   end
 
-  defp parse_did(path, query, fragment) do
+  defp parse_did(string, path, query, fragment) do
     {method, id, path} =
       case String.split(path, ":") do
         ["web", host | rest] ->
@@ -54,7 +54,8 @@ defmodule DID.URL do
       id: id,
       path: path,
       query: parse_query(query),
-      fragment: fragment
+      fragment: fragment,
+      string: string
     }
 
     {:ok, did}
